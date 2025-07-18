@@ -1,36 +1,29 @@
-import { useState } from "react";
+import { useReducer} from "react";
 import "./App.css";
 import AddTodo from "./component/AddTodo";
 import TodoList from "./component/TodoList";
 import InitialTodos from "./data/InitialTodos";
-import getNextTodoid from "./utils/getNextTodoid";
+//import getNextTodoid from "./utils/getNextTodoid";
+import todosReducer from "./reducers/todosReducer";
 function App() {
-  const [todos, setTodos] = useState(InitialTodos);
+  const [todos, dispatch] = useReducer(todosReducer,InitialTodos);
   const handleChangeTodo = (todo) => {
-    const changedTodos = todos.map((t) => {
-      if (t.id === todo.id) {
-        return {
-          ...t,
-          title: todo.title,
-          done: todo.done,
-        };
-      }
-      return t;
-    });
-    setTodos(changedTodos);
+    dispatch({
+      type:"change",
+      todo,
+    })
   };
   const handleDeleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    dispatch({
+      type :"delete",
+      id,
+    })
   };
   const handleAddTodo = (title) => {
-    setTodos([
-      ...todos,
-      {
-        id: getNextTodoid(todos),
-        title,
-        done: false,
-      },
-    ]);
+    dispatch({
+      type:"add",
+      title,
+    })
   };
 
   return (
